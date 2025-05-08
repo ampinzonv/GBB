@@ -1,4 +1,4 @@
-# Documentation for `plot.sh` and `file.sh`
+# Documentation for `plot.sh`, `file.sh`, and `utility.sh`
 
 ## Functions in `plot.sh`
 
@@ -154,3 +154,48 @@ This function retrieves the header and sequence for a specific ID from a FASTA f
 get_fasta_entry <file.fasta> <sequence_id>
 cat file.fasta | get_fasta_entry <sequence_id>
 ```
+
+---
+
+### `get_fasta_range`
+Extracts specific subsequences from a FASTA file based on a list of ranges.
+
+#### Purpose
+This function retrieves subsequences from a FASTA file based on specified start and end positions.
+
+#### Usage
+```bash
+get_fasta_range <file.fasta> <range1-range2,...>
+cat file.fasta | get_fasta_range <range1-range2,...>
+```
+
+---
+
+## Functions in `utility.sh`
+
+### `get_list`
+Generates a sorted list of unique values from a file, with optional frequency counts.
+
+#### Purpose
+This function processes a file or standard input to produce a sorted list of unique values. If the `--frequency` flag is provided, it also calculates the frequency and percentage of each value.
+
+#### Usage
+```bash
+get_list [--frequency] <file | -> 
+cat file | get_list [--frequency]
+```
+
+#### Arguments
+- `--frequency`: If provided, the function outputs the frequency and percentage of each unique value.
+- `<file>`: The input file to process. If omitted or set to `-`, the function reads from standard input.
+
+#### Example
+```bash
+# Generate a sorted list of unique values
+get_list input.txt
+
+# Generate a sorted list with frequency and percentage
+get_list --frequency input.txt
+```
+
+---
