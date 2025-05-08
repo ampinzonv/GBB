@@ -173,95 +173,29 @@ cat file.fasta | get_fasta_range <range1-range2,...>
 
 ## Functions in `utility.sh`
 
-### `validate_fasta`
-Validates the format of a FASTA file.
+### `get_list`
+Generates a sorted list of unique values from a file, with optional frequency counts.
 
 #### Purpose
-This function checks if a given file conforms to the FASTA format by ensuring headers start with `>` and sequences contain only valid characters.
+This function processes a file or standard input to produce a sorted list of unique values. If the `--frequency` flag is provided, it also calculates the frequency and percentage of each value.
 
 #### Usage
 ```bash
-validate_fasta <file.fasta>
-cat file.fasta | validate_fasta
+get_list [--frequency] <file | -> 
+cat file | get_list [--frequency]
+```
+
+#### Arguments
+- `--frequency`: If provided, the function outputs the frequency and percentage of each unique value.
+- `<file>`: The input file to process. If omitted or set to `-`, the function reads from standard input.
+
+#### Example
+```bash
+# Generate a sorted list of unique values
+get_list input.txt
+
+# Generate a sorted list with frequency and percentage
+get_list --frequency input.txt
 ```
 
 ---
-
-### `reverse_complement`
-Generates the reverse complement of a DNA sequence.
-
-#### Purpose
-This function computes the reverse complement of a DNA sequence provided as input.
-
-#### Usage
-```bash
-reverse_complement <sequence>
-echo "ATCG" | reverse_complement
-```
-
----
-
-### `count_nucleotides`
-Counts the occurrences of each nucleotide in a DNA sequence.
-
-#### Purpose
-This function outputs the count of each nucleotide (A, T, C, G) in a given DNA sequence.
-
-#### Usage
-```bash
-count_nucleotides <sequence>
-echo "ATCGATCG" | count_nucleotides
-```
-
----
-
-### `translate_dna`
-Translates a DNA sequence into a protein sequence.
-
-#### Purpose
-This function converts a DNA sequence into its corresponding protein sequence using the standard genetic code.
-
-#### Usage
-```bash
-translate_dna <sequence>
-echo "ATGCGT" | translate_dna
-```
-
----
-
-### `generate_random_fasta`
-Generates a random FASTA file with specified parameters.
-
-#### Purpose
-This function creates a random FASTA file with a given number of sequences, sequence length, and optional header prefix.
-
-#### Usage
-```bash
-generate_random_fasta <num_sequences> <sequence_length> [header_prefix]
-```
-
----
-
-### `compress_fasta`
-Compresses a FASTA file using gzip.
-
-#### Purpose
-This function compresses a FASTA file to save storage space.
-
-#### Usage
-```bash
-compress_fasta <file.fasta>
-```
-
----
-
-### `decompress_fasta`
-Decompresses a gzipped FASTA file.
-
-#### Purpose
-This function decompresses a gzipped FASTA file for further processing.
-
-#### Usage
-```bash
-decompress_fasta <file.fasta.gz>
-```
