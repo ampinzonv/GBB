@@ -1,0 +1,24 @@
+{
+  "version": "1.2",
+  "dbname": "coronavirusProteome",
+  "dbtype": "Protein",
+  "db-version": 5,
+  "description": "coronavirusProteome",
+  "number-of-letters": 14611,
+  "number-of-sequences": 10,
+  "last-updated": "2025-05-10T14:35:00",
+  "number-of-volumes": 1,
+  "bytes-total": 213337,
+  "bytes-to-cache": 14814,
+  "files": [
+    "coronavirusProteome.pdb",
+    "coronavirusProteome.phr",
+    "coronavirusProteome.pin",
+    "coronavirusProteome.pog",
+    "coronavirusProteome.pos",
+    "coronavirusProteome.pot",
+    "coronavirusProteome.psq",
+    "coronavirusProteome.ptf",
+    "coronavirusProteome.pto"
+  ]
+}

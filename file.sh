@@ -369,3 +369,36 @@ get_fasta_range() {
     }
   ' "${fasta_file:-/dev/stdin}"
 }
+
+guess_sequence_type() {
+    local fasta_file="$1"
+
+    if [[ ! -f "$fasta_file" ]]; then
+        echo "Error: archivo '$fasta_file' no encontrado." >&2
+        return 1
+    fi
+
+    # Comprobación rápida: ¿hay encabezados tipo FASTA?
+    if ! grep -q '^>' "$fasta_file"; then
+        echo "unknown"
+        return 0
+    fi
+
+    # Letras exclusivas de proteínas
+    local protein_chars="EFILPQZVXMW"
+
+    # Extraer primeras secuencias, sin encabezados, max 1000 caracteres
+    local sequence_sample
+    sequence_sample=$(awk '!/^>/ && NF { seq = seq $0 } END { print substr(seq, 1, 1000) }' "$fasta_file" | tr '[:lower:]' '[:upper:]')
+
+    if [[ -z "$sequence_sample" ]]; then
+        echo "unknown"
+        return 0
+    fi
+
+    if echo "$sequence_sample" | grep -q "[$protein_chars]"; then
+        echo "prot"
+    else
+        echo "nucl"
+    fi
+}
