@@ -1,4 +1,14 @@
-get_fasta_header() {
+#
+# This script provides utility functions for file handling,
+# including format conversions, file validation, and other
+# file-related operations for Bioinformatics workflows.
+#
+# Created by: 
+# Andres M. Pinzón [ampinzonv@unal.edu.co]
+# Institute for Genetics - National University of Colombia
+#
+
+bb_get_fasta_header() {
   if [[ -t 0 && ( -z "$1" || ! -f "$1" ) ]]; then
     echo "Uso: get_fasta_header <archivo.fasta> o usar con pipe: cat archivo.fasta | get_fasta_header" >&2
     return 1
@@ -14,7 +24,7 @@ get_fasta_header() {
 }
 
 
-get_fasta_id() {
+bb_get_fasta_id() {
   if [[ -t 0 && ( -z "$1" || ! -f "$1" ) ]]; then
     echo "Uso: get_fasta_id <archivo.fasta> o usar con pipe: cat archivo.fasta | get_fasta_id" >&2
     return 1
@@ -29,7 +39,7 @@ get_fasta_id() {
   fi
 }
 
-get_fasta_seq() {
+bb_get_fasta_seq() {
   if [[ -t 0 && ( -z "$1" || ! -f "$1" ) ]]; then
     echo "Uso: get_fasta_seq <archivo.fasta> o usar con pipe: cat archivo.fasta | get_fasta_seq" >&2
     return 1
@@ -42,7 +52,7 @@ get_fasta_seq() {
   fi
 }
 
-get_fasta_length() {
+bb_get_fasta_length() {
   local fasta_file="$1"
 
   if [[ -z "$fasta_file" || "$fasta_file" == "-" ]]; then
@@ -74,7 +84,7 @@ get_fasta_length() {
 }
 
 
-fastq_to_fasta() {
+bb_fastq_to_fasta() {
   if [[ -t 0 && ( -z "$1" || ! -f "$1" ) ]]; then
     echo "Uso: fastq_to_fasta <archivo.fastq> o usar con pipe: cat archivo.fastq | fastq_to_fasta" >&2
     return 1
@@ -87,7 +97,7 @@ fastq_to_fasta() {
   fi
 }
 
-split_multiple_fasta() {
+bb_split_multiple_fasta() {
   local infile="$1"
   local outdir="$2"
 
@@ -122,7 +132,7 @@ split_multiple_fasta() {
 }
 
 
-fastq_stats() {
+bb_fastq_stats() {
   local infile="$1"
   local filename="${infile:-STDIN}"
   local reader="cat"
@@ -184,7 +194,7 @@ fastq_stats() {
   '
 }
 
-fasta_stats() {
+bb_fasta_stats() {
   local infile="$1"
   local filename="${infile:-STDIN}"
 
@@ -265,7 +275,7 @@ fasta_stats() {
 }
 
 
-get_fasta_entry() {
+bb_get_fasta_entry() {
   local fasta_file="$1"
   local query_id="$2"
 
@@ -291,7 +301,7 @@ get_fasta_entry() {
   ' "${fasta_file:-/dev/stdin}"
 }
 
-get_fasta_range() {
+bb_get_fasta_range() {
   local fasta_file="$1"
   local range_list="$2"
 
@@ -370,7 +380,7 @@ get_fasta_range() {
   ' "${fasta_file:-/dev/stdin}"
 }
 
-guess_sequence_type() {
+bb_guess_sequence_type() {
     local fasta_file="$1"
 
     if [[ ! -f "$fasta_file" ]]; then

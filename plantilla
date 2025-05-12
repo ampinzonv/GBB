@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+#
+# Bioinformatics script template with robust error handling,
+# input validation, and flexible I/O management.
+#
+# Created by: Your Name [your.email@example.com]
+# Your Organization
+#
+
+set -euo pipefail
+
+# Constants
+readonly VERSION="1.0.0"
+readonly SCRIPT_NAME=$(basename "$0")
+readonly TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+# Default values
+input=""
+output=""
+quiet=0
+temp_files=()
+
+# Show help
+show_help() {
+    cat << EOF
+Bioinformatics BASH Script Template v${VERSION}
+
+Usage:
+  ${SCRIPT_NAME} --in <input_file_or_dash> [--out <output_file>] [--quiet]
+
+Options:
+  --in       Input file or '-' to read from STDIN (mandatory)
+  --out      Output file path. If not provided, defaults to current directory with basename + extension
+  --quiet    Suppress output messages
+  --version  Show version information
+  --h        Show this help message
+
+Examples:
+  ${SCRIPT_NAME} --in input.fasta --out result.txt
+  cat input.fasta | ${SCRIPT_NAME} --in - --out result.txt
+EOF
+}
+
+# Show version information
+show_version() {
+    echo "${SCRIPT_NAME} v${VERSION}"
+}
+
+# Cleanup function
+cleanup() {
+    # Remove any temporary files
+    if [[ ${#temp_files[@]} -gt 0 ]]; then
+        log "Cleaning up temporary files..."
+        rm -f "${temp_files[@]}"
+    fi
+}
+
+# Register cleanup function for signals
+trap cleanup EXIT INT TERM
+
+# Logging function
+log() {
+    if [[ "$quiet" -eq 0 ]]; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >&2
+    fi
+}
+
+# Error handling function
+error() {
+    echo "[ERROR] $*" >&2
+    exit 1
+}
+
+# Create a temporary file and register for cleanup
+create_temp_file() {
+    local prefix="${1:-temp}"
+    local temp_file
+    temp_file=$(mktemp -t "${prefix}.XXXXXX") || error "Failed to create temporary file"
+    temp_files+=("$temp_file")
+    echo "$temp_file"
+}
+
+# Parse arguments
+if [ $# -eq 0 ]; then
+    show_help
+    exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --in)
+            input="$2"
+            shift 2
+            ;;
+        --out)
+            output="$2"
+            shift 2
+            ;;
+        --quiet)
+            quiet=1
+            shift
+            ;;
+        --version)
+            show_version
+            exit 0
+            ;;
+        --h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            error "Unknown option: $1"
+            ;;
+    esac
+done
+
+# Validate input
+if [[ -z "$input" ]]; then
+    error "Error: --in argument is required."
+fi
+
+if [[ "$input" != "-" && ! -f "$input" ]]; then
+    error "Error: Input file '$input' does not exist."
+fi
+
+# Determine output filename if not specified
+if [[ -z "$output" ]]; then
+    if [[ "$input" == "-" ]]; then
+        output="output_${TIMESTAMP}.txt"
+    else
+        basename=$(basename "$input")
+        output="${basename%.*}_${TIMESTAMP}.out"
+    fi
+fi
+
+# Create output directory if needed
+outdir=$(dirname "$output")
+if [[ ! -d "$outdir" ]]; then
+    log "Creating output directory: $outdir"
+    mkdir -p "$outdir" || error "Failed to create output directory: $outdir"
+fi
+
+# Check write permissions
+if [[ -d "$outdir" && ! -w "$outdir" ]]; then
+    error "Error: No write permission in output directory: $outdir"
+fi
+
+# Main processing function
+process_data() {
+    local in_file="$1"
+    local out_file="$2"
+    
+    log "Processing input..."
+    
+    # Create a temp file if needed
+    local temp_output
+    temp_output=$(create_temp_file "processing")
+    
+    if [[ "$in_file" == "-" ]]; then
+        # Process from STDIN
+        if ! cat - > "$temp_output"; then
+            error "Error processing STDIN"
+        fi
+    else
+        # Process from file
+        if ! cat "$in_file" > "$temp_output"; then
+            error "Error processing file: $in_file"
+        fi
+    fi
+    
+    # Move temp file to final output
+    mv "$temp_output" "$out_file"
+    
+    log "Output written to $out_file"
+    return 0
+}
+
+# Main execution
+main() {
+    local start_time
+    start_time=$(date +%s)
+    
+    log "Starting ${SCRIPT_NAME} v${VERSION}"
+    log "Input: ${input}"
+    log "Output: ${output}"
+    
+    # Call the main processing function
+    if ! process_data "$input" "$output"; then
+        error "Processing failed"
+    fi
+    
+    # Calculate execution time
+    local end_time
+    end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    log "Completed successfully in ${duration} seconds"
+    return 0
+}
+
+# Execute main and handle errors
+if ! main; then
+    error "Execution failed"
+fi

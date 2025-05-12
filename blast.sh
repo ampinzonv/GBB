@@ -1,4 +1,15 @@
-create_blast_db() {
+#
+# This script contains functions to create BLAST databases,
+# run BLAST searches, and process BLAST results, including
+# summaries and best-hit extraction.
+#
+# Created by: 
+# Andres M. Pinzón [ampinzonv@unal.edu.co]
+# Institute for Genetics - National University of Colombia
+#
+
+
+bb_create_blast_db() {
     # Inicializar variables por defecto
     local in=""
     local outdir="."
@@ -86,7 +97,7 @@ create_blast_db() {
     fi
 }
 
-run_blast() {
+bb_run_blast() {
   local query=""
   local db=""
   local blast_type=""
@@ -205,7 +216,7 @@ run_blast() {
 }
 
 
-guess_db_type() {
+bb_guess_db_type() {
   local db_prefix="$1"
   if [[ -f "${db_prefix}.pin" ]]; then
     echo "prot"
@@ -217,7 +228,7 @@ guess_db_type() {
 }
 
 
-blast_best_hit() {
+bb_blast_best_hit() {
   local infile="$1"
 
 
@@ -253,7 +264,7 @@ blast_best_hit() {
   done <<< "$qseqids"
 }
 
-blast_summary() {
+bb_blast_summary() {
   local infile="$1"
 
   if [[ -z "$infile" || ! -f "$infile" ]]; then
@@ -320,7 +331,7 @@ blast_summary() {
 }
 
 
-blast_on_the_fly() {
+bb_blast_on_the_fly() {
   local query=""
   local db=""
   local blast_type=""

@@ -1,6 +1,14 @@
-#=========================
+#
+# This script contains functions for generating visualizations,
+# including histograms, heatmaps, and other graphical representations
+# of Bioinformatics data using tools like gnuplot.
+#
+# Created by: 
+# Andres M. Pinzón [ampinzonv@unal.edu.co]
+# Institute for Genetics - National University of Colombia
+#
 
-plot_check_dependencies() {
+bb_plot_check_dependencies() {
   if ! command -v gnuplot >/dev/null 2>&1; then
     echo "❌ Error: gnuplot no está instalado o no está en el PATH." >&2
     return 1
@@ -10,7 +18,7 @@ plot_check_dependencies() {
 
 #=========================
 
-plot_blast_hits_txt() {
+bb_plot_blast_hits_txt() {
   local infile="$1"
   local top_hits_number=""
   local line_width=50
@@ -89,7 +97,7 @@ plot_blast_hits_txt() {
 
 
 #=========================
-plot_histogram_txt() {
+bb_plot_histogram_txt() {
   local infile=""
   local max_width=50
   local char="="

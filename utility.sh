@@ -1,4 +1,14 @@
-get_list() {
+#
+# This script provides general-purpose utility functions
+# for Bioinformatics workflows, including data parsing
+# and other helper functions.
+#
+# Created by: 
+# Andres M. Pinzón [ampinzonv@unal.edu.co]
+# Institute for Genetics - National University of Colombia
+#
+
+bb_get_list() {
   local show_freq=0
   local infile="$1"
 
@@ -10,7 +20,7 @@ get_list() {
   if [[ -z "$infile" || "$infile" == "-" ]]; then
     infile="/dev/stdin"
   elif [[ ! -f "$infile" ]]; then
-    echo "Uso: get_list [--frequency] <archivo | ->" >&2
+    echo "Uso: bb_get_list [--frequency] <archivo | ->" >&2
     return 1
   fi
 
